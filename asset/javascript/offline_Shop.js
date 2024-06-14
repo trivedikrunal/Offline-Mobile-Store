@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-    let form = document.querySelector("form");
-    let main = document.querySelector(".main");
+    let form = document.querySelector("#createProductForm");
+    let productList = document.querySelector(".productList");
+    let historyList = document.querySelector(".historyList");
+    let updateHistoryList = document.querySelector(".updateHistoryList");
 
     if (form) {
         form.addEventListener("submit", (event) => {
@@ -23,37 +25,103 @@ document.addEventListener("DOMContentLoaded", () => {
             if (checkMobileName === 1) {
                 alert("Mobile Name Already Exists");
             } else {
-                mobileData.push({
+                let newProduct = {
                     mobileName: mobileName,
                     mobileQuantity: parseInt(mobileQuantity),
                     mobilePrice: mobilePrice
-                });
+                };
+
+                mobileData.push(newProduct);
 
                 localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
+
+                // Add to history
+                addToHistory(newProduct);
+
                 event.target.reset();
             }
             displayDataShow();
         });
     }
 
+    let addToHistory = (product) => {
+        let historyData = JSON.parse(localStorage.getItem("historyDetails")) ?? [];
+        let currentTime = new Date().toLocaleString();
+
+        historyData.push({
+            product: product,
+            time: currentTime
+        });
+
+        localStorage.setItem("historyDetails", JSON.stringify(historyData));
+        displayHistory();
+    }
+
+    let addToUpdateHistory = (product) => {
+        let updateHistoryData = JSON.parse(localStorage.getItem("updateHistoryDetails")) ?? [];
+        let currentTime = new Date().toLocaleString();
+
+        updateHistoryData.push({
+            product: product,
+            time: currentTime
+        });
+
+        localStorage.setItem("updateHistoryDetails", JSON.stringify(updateHistoryData));
+        displayUpdateHistory();
+    }
+
     let displayDataShow = () => {
         let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
         let finalData = '';
+
         mobileData.forEach((element, i) => {
             finalData += `<div class="item">
-                            <span onclick='removeData(${i})'>&times;</span>
-                            <h5>Mobile Name</h5>
-                            <div>${element.mobileName}</div>
-                            <h5>Mobile Quantity</h5>
-                            <div>${element.mobileQuantity}</div>
-                            <h5>Mobile Price</h5>
-                            <div>${element.mobilePrice}</div>
-                            <input type="number" id="addQnt${i}" placeholder="Enter Purchase Quantity">
-                            <button onclick="checkMobileQuantity(${i})">Add to cart</button>
+                            <div>Product Name:${element.mobileName}</div>
+                            <div>Product Price:${element.mobilePrice}</div>
+                            <button onclick='removeData(${i})'>Delete</button>
+                            <button onclick='updateData(${i})'>Update</button>
                           </div>`;
         });
-        if (main) {
-            main.innerHTML = finalData;
+
+        if (productList) {
+            productList.innerHTML = finalData;
+        }
+    }
+
+    let displayHistory = () => {
+        let historyData = JSON.parse(localStorage.getItem("historyDetails")) ?? [];
+        let finalData = '';
+
+        historyData.forEach((element, i) => {
+            finalData += `<div class="item">
+                            <div>Product Name: ${element.product.mobileName}</div>
+                            <div>Product Quantity: ${element.product.mobileQuantity}</div>
+                            <div>Product Price: ${element.product.mobilePrice}</div>
+                            <div>Time: ${element.time}</div>
+                            <button onclick='removeHistory(${i})'>Delete</button>
+                          </div>`;
+        });
+
+        if (historyList) {
+            historyList.innerHTML = finalData;
+        }
+    }
+
+    let displayUpdateHistory = () => {
+        let updateHistoryData = JSON.parse(localStorage.getItem("updateHistoryDetails")) ?? [];
+        let finalData = '';
+
+        updateHistoryData.forEach((element, i) => {
+            finalData += `<div class="item">
+                            <div>Product Name: ${element.product.mobileName}</div>
+                            <div>Product Price: ${element.product.mobilePrice}</div>
+                            <div>Time: ${element.time}</div>
+                            <button onclick='removeUpdateHistory(${i})'>Delete</button>
+                          </div>`;
+        });
+
+        if (updateHistoryList) {
+            updateHistoryList.innerHTML = finalData;
         }
     }
 
@@ -64,28 +132,45 @@ document.addEventListener("DOMContentLoaded", () => {
         displayDataShow();
     }
 
-    let checkMobileQuantity = (index) => {
+    let updateData = (index) => {
         let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
-        let availableQuantity = mobileData[index].mobileQuantity;
-        let currentQtn = parseInt(availableQuantity);
-        let quantityInput = document.getElementById(`addQnt${index}`).value;
-        let inputQtn = parseInt(quantityInput);
+        let newMobileName = prompt("Enter new mobile name:", mobileData[index].mobileName);
+        let newMobilePrice = prompt("Enter new mobile price:", mobileData[index].mobilePrice);
 
-        if (quantityInput !== '' && inputQtn > 0) {
-            if (inputQtn <= currentQtn) {
-                currentQtn -= inputQtn;
-                mobileData[index].mobileQuantity = currentQtn;
-                localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
-                displayDataShow();
-            } else {
-                alert("Out of stock");
-            }
-        } else {
-            alert("Please fill in the quantity");
+        if (newMobileName && newMobilePrice) {
+            let updatedProduct = {
+                ...mobileData[index],
+                mobileName: newMobileName,
+                mobilePrice: newMobilePrice
+            };
+
+            mobileData[index] = updatedProduct;
+
+            localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
+            addToUpdateHistory(updatedProduct);
+            displayDataShow();
         }
     }
 
+    let removeHistory = (index) => {
+        let historyData = JSON.parse(localStorage.getItem("historyDetails")) ?? [];
+        historyData.splice(index, 1);
+        localStorage.setItem("historyDetails", JSON.stringify(historyData));
+        displayHistory();
+    }
+
+    let removeUpdateHistory = (index) => {
+        let updateHistoryData = JSON.parse(localStorage.getItem("updateHistoryDetails")) ?? [];
+        updateHistoryData.splice(index, 1);
+        localStorage.setItem("updateHistoryDetails", JSON.stringify(updateHistoryData));
+        displayUpdateHistory();
+    }
+
     displayDataShow();
+    displayHistory();
+    displayUpdateHistory();
     window.removeData = removeData;
-    window.checkMobileQuantity = checkMobileQuantity;
+    window.updateData = updateData;
+    window.removeHistory = removeHistory;
+    window.removeUpdateHistory = removeUpdateHistory;
 });
