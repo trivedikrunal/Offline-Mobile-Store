@@ -1,141 +1,91 @@
-let form = document.querySelector("form");
-console.log(form);
-let main = document.querySelector(".main");
-console.log(main);
-form.addEventListener("button", (event) => {
-    console.log(event);
+document.addEventListener("DOMContentLoaded", () => {
+    let form = document.querySelector("form");
+    let main = document.querySelector(".main");
 
-    let mobileName = event.target.mobileName.value;
-    let mobileQuntitity = event.target.mobileQuntitity.value;
-    let mobilePrice = event.target.mobilePrice.value;
-    let chackMobileName = 0;
+    if (form) {
+        form.addEventListener("submit", (event) => {
+            event.preventDefault();
 
-    let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
+            let mobileName = event.target.mobileName.value;
+            let mobileQuantity = event.target.mobileQuantity.value;
+            let mobilePrice = event.target.mobilePrice.value;
+            let checkMobileName = 0;
 
-    for (let v of mobileData) {
-        if (v.mobileName == mobileName) {
-            chackMobileName = 1;
-            break;
-        }
-    }
+            let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
 
-    if (chackMobileName == 1) {
-        alert("Mobile Name Allready Exists")
-    }
-    else {
+            for (let v of mobileData) {
+                if (v.mobileName === mobileName) {
+                    checkMobileName = 1;
+                    break;
+                }
+            }
 
-        mobileData.push({
-            'mobileName': mobileName,
-            'mobileQuntitity': parseInt(mobileQuntitity),
-            'mobilePrice': mobilePrice
-        });
+            if (checkMobileName === 1) {
+                alert("Mobile Name Already Exists");
+            } else {
+                mobileData.push({
+                    mobileName: mobileName,
+                    mobileQuantity: parseInt(mobileQuantity),
+                    mobilePrice: mobilePrice
+                });
 
-
-        localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
-        event.target.reset();
-    }
-    displayDataShow();
-    event.preventDefault();
-
-});
-
-
-
-
-
-let displayDataShow = () => {
-    let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
-    let finalData = '';
-    mobileData.forEach((element, i) => {
-
-
-
-        finalData += ` <div class="item">
-
-                                <span onclick='removeData(${i})'>&times;</span>
-
-                                <h5>Mobile Name</h5>
-                                <div>${element.mobileName}</div>
-
-                                <h5>Mobile Quntitity</h5>
-                                <div>${element.mobileQuntitity}</div>
-
-                                <h5>Mobile Price</h5>
-                                <div>${element.mobilePrice}</div>
-
-                                <input type="number" id="addQnt" placeholder="Enter Purchas Quntitity"  >
-
-                                <button onclick="chackMobileQntitity(${i})">Add to cart</button>
-                                </div>`
-
-    });
-    main.innerHTML = finalData;
-
-}
-
-let removeData = (index) => {
-    let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
-    console.log(mobileData);
-    mobileData.splice(index, 1);
-    localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
-    displayDataShow();
-}
-
-
-let chackMobileQntitity = (index) => {
-    console.log(index);
-    let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
-    console.log(mobileData);
-
-
-    let avabilableQntitity = mobileData[index].mobileQuntitity;
-    let currentQtn = parseInt(avabilableQntitity);
-    console.log(currentQtn);
-
-    console.log(typeof (currentQtn));
-
-
-    let quntitityInput = document.getElementById("addQnt").value;
-    let inputQtn = parseInt(quntitityInput);
-    console.log(inputQtn);
-
-
-    if (quntitityInput != '' && quntitityInput > 0) {
-        if (quntitityInput <= mobileData[index].mobileQuntitity) {
-            currentQtn = currentQtn - inputQtn
-
-            mobileData[index].mobileQuntitity = currentQtn
-
-            localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
+                localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
+                event.target.reset();
+            }
             displayDataShow();
-            console.log(currentQtn);
-
-
-
-
-
-        }
-        else {
-            alert("Out up stock");
-
-
-        }
-
-
-    }
-    else {
-        alert("Plasec Fill Up Quntitity");
-
-
-
+        });
     }
 
-    localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
+    let displayDataShow = () => {
+        let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
+        let finalData = '';
+        mobileData.forEach((element, i) => {
+            finalData += `<div class="item">
+                            <span onclick='removeData(${i})'>&times;</span>
+                            <h5>Mobile Name</h5>
+                            <div>${element.mobileName}</div>
+                            <h5>Mobile Quantity</h5>
+                            <div>${element.mobileQuantity}</div>
+                            <h5>Mobile Price</h5>
+                            <div>${element.mobilePrice}</div>
+                            <input type="number" id="addQnt${i}" placeholder="Enter Purchase Quantity">
+                            <button onclick="checkMobileQuantity(${i})">Add to cart</button>
+                          </div>`;
+        });
+        if (main) {
+            main.innerHTML = finalData;
+        }
+    }
+
+    let removeData = (index) => {
+        let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
+        mobileData.splice(index, 1);
+        localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
+        displayDataShow();
+    }
+
+    let checkMobileQuantity = (index) => {
+        let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
+        let availableQuantity = mobileData[index].mobileQuantity;
+        let currentQtn = parseInt(availableQuantity);
+        let quantityInput = document.getElementById(`addQnt${index}`).value;
+        let inputQtn = parseInt(quantityInput);
+
+        if (quantityInput !== '' && inputQtn > 0) {
+            if (inputQtn <= currentQtn) {
+                currentQtn -= inputQtn;
+                mobileData[index].mobileQuantity = currentQtn;
+                localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
+                displayDataShow();
+            } else {
+                alert("Out of stock");
+            }
+        } else {
+            alert("Please fill in the quantity");
+        }
+    }
+
     displayDataShow();
-}
-
-displayDataShow();
-
-
-// window.location.href = "purchace_Page.html";
-// window.location.href = "create_Product.html";
+    window.removeData = removeData;
+    window.checkMobileQuantity = checkMobileQuantity;
+});

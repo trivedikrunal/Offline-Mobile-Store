@@ -109,3 +109,39 @@ form button {
     margin: auto;
     padding-top: 20px;
 }
+
+.item {
+    flex-basis: 20%;
+    margin: 1%;
+    box-shadow: 0px 0px 10px 2px #ccc;
+    padding: 1%;
+    position: relative;
+}
+
+.item span {
+    font-size: 30px;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    cursor: pointer;
+
+}
+
+.item h5 {
+    padding-top: 10px;
+    font-size: 16px;
+}
+
+.item input {
+    margin-top: 10px;
+}
+
+.item button {
+    height: 25px;
+    background-color: greenyellow;
+    border-radius: 10px;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+}
