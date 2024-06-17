@@ -104,6 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mobileData.forEach((element, i) => {
             finalData += `<tr>
                             <td>${element.mobileName}</td>
+                            <td>${element.mobileQuantity}</td>
                             <td>${element.mobilePrice}</td>
                             <td>
                                 <button onclick='removeData(${i})'>Delete</button>
