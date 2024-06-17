@@ -9,11 +9,7 @@
 <body>
     <div class="mainHomePage">
         <a href="../../index.html" class="homePage">Home</a>
-        <a href="create_Product.html" class="createProduct">Create Product</a>
-        <a href="product_history.html" class="historyPage">Product History</a>
-        <a href="product_update_history.html" class="updateHistoryPage">Product Update History</a>
-
-
+        <a href="create_Product.html" class="createProduct">Product</a>
     </div>
 
     <form id="createProductForm">
@@ -23,6 +19,37 @@
         <input type="number" name="mobilePrice" placeholder="Enter Mobile Price" autocomplete="off" required> <br><br>
         <button type="submit">Create</button>
     </form>
+
+    <div class="homepageSection3">
+        <h2>Product History</h2>
+        <table class="historyTable">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Quantity</th>
+                    <th>Product Price</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="historyList"></tbody>
+        </table>
+    </div>
+
+    <div class="homepageSection3">
+        <h2>Product Update History</h2>
+        <table class="updateHistoryTable">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="updateHistoryList"></tbody>
+        </table>
+    </div>
 
     <script src="../javascript/offline_Shop.js"></script>
 </body>

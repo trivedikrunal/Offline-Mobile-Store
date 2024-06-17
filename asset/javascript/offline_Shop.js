@@ -1,8 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     let form = document.querySelector("#createProductForm");
+    let updateForm = document.querySelector("#updateProductForm");
     let productList = document.querySelector(".productList");
     let historyList = document.querySelector(".historyList");
     let updateHistoryList = document.querySelector(".updateHistoryList");
+    let updateFormContainer = document.querySelector(".updateFormContainer");
 
     if (form) {
         form.addEventListener("submit", (event) => {
@@ -35,12 +37,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
 
-                // Add to history
                 addToHistory(newProduct);
 
                 event.target.reset();
             }
             displayDataShow();
+        });
+    }
+
+    if (updateForm) {
+        updateForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            let updateIndex = event.target.updateIndex.value;
+            let newMobileName = event.target.updateMobileName.value;
+            let newMobilePrice = event.target.updateMobilePrice.value;
+
+            let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
+
+            let updatedProduct = {
+                ...mobileData[updateIndex],
+                mobileName: newMobileName,
+                mobilePrice: newMobilePrice
+            };
+
+            mobileData[updateIndex] = updatedProduct;
+
+            localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
+            addToUpdateHistory(updatedProduct);
+            displayDataShow();
+
+            updateFormContainer.style.display = "none";
         });
     }
 
@@ -75,12 +102,14 @@ document.addEventListener("DOMContentLoaded", () => {
         let finalData = '';
 
         mobileData.forEach((element, i) => {
-            finalData += `<div class="item">
-                            <div>Product Name:${element.mobileName}</div>
-                            <div>Product Price:${element.mobilePrice}</div>
-                            <button onclick='removeData(${i})'>Delete</button>
-                            <button onclick='updateData(${i})'>Update</button>
-                          </div>`;
+            finalData += `<tr>
+                            <td>${element.mobileName}</td>
+                            <td>${element.mobilePrice}</td>
+                            <td>
+                                <button onclick='removeData(${i})'>Delete</button>
+                                <button onclick='openUpdateForm(${i})'>Update</button>
+                            </td>
+                          </tr>`;
         });
 
         if (productList) {
@@ -93,13 +122,15 @@ document.addEventListener("DOMContentLoaded", () => {
         let finalData = '';
 
         historyData.forEach((element, i) => {
-            finalData += `<div class="item">
-                            <div>Product Name: ${element.product.mobileName}</div>
-                            <div>Product Quantity: ${element.product.mobileQuantity}</div>
-                            <div>Product Price: ${element.product.mobilePrice}</div>
-                            <div>Time: ${element.time}</div>
-                            <button onclick='removeHistory(${i})'>Delete</button>
-                          </div>`;
+            finalData += `<tr>
+                            <td>${element.product.mobileName}</td>
+                            <td>${element.product.mobileQuantity}</td>
+                            <td>${element.product.mobilePrice}</td>
+                            <td>${element.time}</td>
+                            <td>
+                                <button onclick='removeHistory(${i})'>Delete</button>
+                            </td>
+                          </tr>`;
         });
 
         if (historyList) {
@@ -112,12 +143,14 @@ document.addEventListener("DOMContentLoaded", () => {
         let finalData = '';
 
         updateHistoryData.forEach((element, i) => {
-            finalData += `<div class="item">
-                            <div>Product Name: ${element.product.mobileName}</div>
-                            <div>Product Price: ${element.product.mobilePrice}</div>
-                            <div>Time: ${element.time}</div>
-                            <button onclick='removeUpdateHistory(${i})'>Delete</button>
-                          </div>`;
+            finalData += `<tr>
+                            <td>${element.product.mobileName}</td>
+                            <td>${element.product.mobilePrice}</td>
+                            <td>${element.time}</td>
+                            <td>
+                                <button onclick='removeUpdateHistory(${i})'>Delete</button>
+                            </td>
+                          </tr>`;
         });
 
         if (updateHistoryList) {
@@ -132,24 +165,15 @@ document.addEventListener("DOMContentLoaded", () => {
         displayDataShow();
     }
 
-    let updateData = (index) => {
+    let openUpdateForm = (index) => {
         let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
-        let newMobileName = prompt("Enter new mobile name:", mobileData[index].mobileName);
-        let newMobilePrice = prompt("Enter new mobile price:", mobileData[index].mobilePrice);
+        let product = mobileData[index];
 
-        if (newMobileName && newMobilePrice) {
-            let updatedProduct = {
-                ...mobileData[index],
-                mobileName: newMobileName,
-                mobilePrice: newMobilePrice
-            };
+        updateForm.updateIndex.value = index;
+        updateForm.updateMobileName.value = product.mobileName;
+        updateForm.updateMobilePrice.value = product.mobilePrice;
 
-            mobileData[index] = updatedProduct;
-
-            localStorage.setItem("mobileDetails", JSON.stringify(mobileData));
-            addToUpdateHistory(updatedProduct);
-            displayDataShow();
-        }
+        updateFormContainer.style.display = "block";
     }
 
     let removeHistory = (index) => {
@@ -170,7 +194,7 @@ document.addEventListener("DOMContentLoaded", () => {
     displayHistory();
     displayUpdateHistory();
     window.removeData = removeData;
-    window.updateData = updateData;
+    window.openUpdateForm = openUpdateForm;
     window.removeHistory = removeHistory;
     window.removeUpdateHistory = removeUpdateHistory;
 });

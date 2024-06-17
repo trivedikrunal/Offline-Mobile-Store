@@ -9,22 +9,38 @@
 <body>
     <div class="mainHomePage">
         <a href="index.html" class="homePage">Home</a>
-        <a href="asset/html/create_Product.html" class="createProduct">Create Product</a>
-        <a href="asset/html/product_history.html" class="historyPage">Product History</a>
-        <a href="asset/html/product_update_history.html" class="updateHistoryPage">Product Update History</a>
-        
-
-
+        <a href="asset/html/create_Product.html" class="createProduct">Product</a>
     </div>
 
     <div class="homepageSection2">
         <h1>Welcome To Offline Mobile Shop</h1> 
     </div>
 
+    <div class="updateFormContainer" style="display: none;">
+        <form id="updateProductForm">
+            <h2>Update Product Form</h2>
+            <input type="hidden" name="updateIndex" value="">
+            <input type="text" name="updateMobileName" placeholder="Enter Mobile Name" autocomplete="off" required> <br><br>
+            <input type="number" name="updateMobilePrice" placeholder="Enter Mobile Price" autocomplete="off" required> <br><br>
+            <button type="submit">Update</button>
+        </form>
+    </div>
+
     <div class="homepageSection3">
         <h2>Product List</h2>
-        <div class="productList"></div>
+        <table class="productTable">
+            <thead>
+                <tr>
+                    <th>Product Name</th>
+                    <th>Product Price</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="productList"></tbody>
+        </table>
     </div>
+
+    
 
     <script src="asset/javascript/offline_Shop.js"></script>
 </body>
