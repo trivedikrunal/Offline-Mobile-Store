@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Customer</title>
+    <link rel="stylesheet" href="../css/offline_Shop.css">
+</head>
+<body>
+    <div class="mainHomePage">
+        <a href="../../index.html" class="homePage">Home</a>
+        <a href="create_Product.html" class="createProduct">Product</a>
+        <a href="customer.html" class="createCustomer">Customer</a>
+    </div>
+
+    <form id="createCustomerForm">
+        <h2>Create Customer Form</h2>
+        <input type="text" name="customerName" placeholder="Enter Customer Name" autocomplete="off" required> <br><br>
+        <input type="email" name="customerEmail" placeholder="Enter Customer Email" autocomplete="off" required> <br><br>
+        <input type="text" name="customerMobile" placeholder="Enter Customer Mobile Number" autocomplete="off" required> <br><br>
+        <button type="submit">Create</button>
+    </form>
+
+    
+
+    <div class="homepageSection3">
+        <h2>Customer Creation History</h2>
+        <table class="customerHistoryTable">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Customer Email</th>
+                    <th>Customer Mobile</th>
+                    <th>Time</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="customerHistoryList"></tbody>
+        </table>
+    </div>
+
+    <script src="../javascript/offline_Shop.js"></script>
+</body>
+</html>

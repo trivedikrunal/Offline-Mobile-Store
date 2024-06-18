@@ -1,10 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
     let form = document.querySelector("#createProductForm");
     let updateForm = document.querySelector("#updateProductForm");
+    let updateCustomerForm = document.querySelector("#updateCustomerForm");
     let productList = document.querySelector(".productList");
     let historyList = document.querySelector(".historyList");
     let updateHistoryList = document.querySelector(".updateHistoryList");
     let updateFormContainer = document.querySelector(".updateFormContainer");
+    let updateCustomerFormContainer = document.querySelector(".updateCustomerFormContainer");
+    let customerForm = document.querySelector("#createCustomerForm");
+    let customerList = document.querySelector(".customerList");
+    let customerHistoryList = document.querySelector(".customerHistoryList");
 
     if (form) {
         form.addEventListener("submit", (event) => {
@@ -45,6 +50,33 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    if (customerForm) {
+        customerForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            let customerName = event.target.customerName.value;
+            let customerEmail = event.target.customerEmail.value;
+            let customerMobile = event.target.customerMobile.value;
+
+            let customerData = JSON.parse(localStorage.getItem("customerDetails")) ?? [];
+
+            let newCustomer = {
+                customerName: customerName,
+                customerEmail: customerEmail,
+                customerMobile: customerMobile
+            };
+
+            customerData.push(newCustomer);
+
+            localStorage.setItem("customerDetails", JSON.stringify(customerData));
+
+            addToCustomerHistory(newCustomer);
+
+            event.target.reset();
+            displayCustomerData();
+        });
+    }
+
     if (updateForm) {
         updateForm.addEventListener("submit", (event) => {
             event.preventDefault();
@@ -68,6 +100,33 @@ document.addEventListener("DOMContentLoaded", () => {
             displayDataShow();
 
             updateFormContainer.style.display = "none";
+        });
+    }
+
+    if (updateCustomerForm) {
+        updateCustomerForm.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            let updateCustomerIndex = event.target.updateCustomerIndex.value;
+            let newCustomerName = event.target.updateCustomerName.value;
+            let newCustomerEmail = event.target.updateCustomerEmail.value;
+            let newCustomerMobile = event.target.updateCustomerMobile.value;
+
+            let customerData = JSON.parse(localStorage.getItem("customerDetails")) ?? [];
+
+            let updatedCustomer = {
+                ...customerData[updateCustomerIndex],
+                customerName: newCustomerName,
+                customerEmail: newCustomerEmail,
+                customerMobile: newCustomerMobile
+            };
+
+            customerData[updateCustomerIndex] = updatedCustomer;
+
+            localStorage.setItem("customerDetails", JSON.stringify(customerData));
+            displayCustomerData();
+
+            updateCustomerFormContainer.style.display = "none";
         });
     }
 
@@ -97,6 +156,19 @@ document.addEventListener("DOMContentLoaded", () => {
         displayUpdateHistory();
     }
 
+    let addToCustomerHistory = (customer) => {
+        let customerHistoryData = JSON.parse(localStorage.getItem("customerHistoryDetails")) ?? [];
+        let currentTime = new Date().toLocaleString();
+
+        customerHistoryData.push({
+            customer: customer,
+            time: currentTime
+        });
+
+        localStorage.setItem("customerHistoryDetails", JSON.stringify(customerHistoryData));
+        displayCustomerHistory();
+    }
+
     let displayDataShow = () => {
         let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
         let finalData = '';
@@ -115,6 +187,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (productList) {
             productList.innerHTML = finalData;
+        }
+    }
+
+    let displayCustomerData = () => {
+        let customerData = JSON.parse(localStorage.getItem("customerDetails")) ?? [];
+        let finalData = '';
+
+        customerData.forEach((element, i) => {
+            finalData += `<tr>
+                            <td>${element.customerName}</td>
+                            <td>${element.customerEmail}</td>
+                            <td>${element.customerMobile}</td>
+                            <td>
+                                <button onclick='removeCustomer(${i})'>Delete</button>
+                                <button onclick='openUpdateCustomerForm(${i})'>Update</button>
+                            </td>
+                          </tr>`;
+        });
+
+        if (customerList) {
+            customerList.innerHTML = finalData;
         }
     }
 
@@ -159,6 +252,27 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    let displayCustomerHistory = () => {
+        let customerHistoryData = JSON.parse(localStorage.getItem("customerHistoryDetails")) ?? [];
+        let finalData = '';
+
+        customerHistoryData.forEach((element, i) => {
+            finalData += `<tr>
+                            <td>${element.customer.customerName}</td>
+                            <td>${element.customer.customerEmail}</td>
+                            <td>${element.customer.customerMobile}</td>
+                            <td>${element.time}</td>
+                            <td>
+                                <button onclick='removeCustomerHistory(${i})'>Delete</button>
+                            </td>
+                          </tr>`;
+        });
+
+        if (customerHistoryList) {
+            customerHistoryList.innerHTML = finalData;
+        }
+    }
+
     let removeData = (index) => {
         let mobileData = JSON.parse(localStorage.getItem("mobileDetails")) ?? [];
         mobileData.splice(index, 1);
@@ -177,6 +291,25 @@ document.addEventListener("DOMContentLoaded", () => {
         updateFormContainer.style.display = "block";
     }
 
+    let removeCustomer = (index) => {
+        let customerData = JSON.parse(localStorage.getItem("customerDetails")) ?? [];
+        customerData.splice(index, 1);
+        localStorage.setItem("customerDetails", JSON.stringify(customerData));
+        displayCustomerData();
+    }
+
+    let openUpdateCustomerForm = (index) => {
+        let customerData = JSON.parse(localStorage.getItem("customerDetails")) ?? [];
+        let customer = customerData[index];
+
+        updateCustomerForm.updateCustomerIndex.value = index;
+        updateCustomerForm.updateCustomerName.value = customer.customerName;
+        updateCustomerForm.updateCustomerEmail.value = customer.customerEmail;
+        updateCustomerForm.updateCustomerMobile.value = customer.customerMobile;
+
+        updateCustomerFormContainer.style.display = "block";
+    }
+
     let removeHistory = (index) => {
         let historyData = JSON.parse(localStorage.getItem("historyDetails")) ?? [];
         historyData.splice(index, 1);
@@ -191,11 +324,25 @@ document.addEventListener("DOMContentLoaded", () => {
         displayUpdateHistory();
     }
 
+    let removeCustomerHistory = (index) => {
+        let customerHistoryData = JSON.parse(localStorage.getItem("customerHistoryDetails")) ?? [];
+        customerHistoryData.splice(index, 1);
+        localStorage.setItem("customerHistoryDetails", JSON.stringify(customerHistoryData));
+        displayCustomerHistory();
+    }
+
     displayDataShow();
     displayHistory();
     displayUpdateHistory();
+    displayCustomerData();
+    displayCustomerHistory();
+
     window.removeData = removeData;
     window.openUpdateForm = openUpdateForm;
     window.removeHistory = removeHistory;
     window.removeUpdateHistory = removeUpdateHistory;
+    window.removeCustomer = removeCustomer;
+    window.openUpdateCustomerForm = openUpdateCustomerForm;
+    window.removeCustomerHistory = removeCustomerHistory;
 });
+

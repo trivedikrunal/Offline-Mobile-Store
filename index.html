@@ -10,6 +10,7 @@
     <div class="mainHomePage">
         <a href="index.html" class="homePage">Home</a>
         <a href="asset/html/create_Product.html" class="createProduct">Product</a>
+        <a href="asset/html/customer.html" class="createCustomer">Customer</a>
     </div>
 
     <div class="homepageSection2">
@@ -22,6 +23,17 @@
             <input type="hidden" name="updateIndex" value="">
             <input type="text" name="updateMobileName" placeholder="Enter Mobile Name" autocomplete="off" required> <br><br>
             <input type="number" name="updateMobilePrice" placeholder="Enter Mobile Price" autocomplete="off" required> <br><br>
+            <button type="submit">Update</button>
+        </form>
+    </div>
+
+    <div class="updateCustomerFormContainer" style="display: none;">
+        <form id="updateCustomerForm">
+            <h2>Update Customer Form</h2>
+            <input type="hidden" name="updateCustomerIndex" value="">
+            <input type="text" name="updateCustomerName" placeholder="Enter Customer Name" autocomplete="off" required> <br><br>
+            <input type="email" name="updateCustomerEmail" placeholder="Enter Customer Email" autocomplete="off" required> <br><br>
+            <input type="text" name="updateCustomerMobile" placeholder="Enter Customer Mobile Number" autocomplete="off" required> <br><br>
             <button type="submit">Update</button>
         </form>
     </div>
@@ -41,7 +53,20 @@
         </table>
     </div>
 
-    
+    <div class="homepageSection3">
+        <h2>Customer List</h2>
+        <table class="customerTable">
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Customer Email</th>
+                    <th>Customer Mobile</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody class="customerList"></tbody>
+        </table>
+    </div>
 
     <script src="asset/javascript/offline_Shop.js"></script>
 </body>
